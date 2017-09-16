@@ -1,10 +1,12 @@
 import React from 'react';
 import '../styles/App.css';
 import Board from '../components/Board.js';
-
+//import * as threat from '../helper/threatHelper.js'
+import { calculateThreat } from '../helper/threatHelper.js'
 class App extends React.Component {
     constructor() {
         super();
+
         this.state = {
             history: [
                 {
@@ -28,45 +30,7 @@ class App extends React.Component {
 
     }
     calculatePotentialMoves(i) {
-
-        let newPotentialMoves = Array(64).fill(false);
-        let currentSquares = this.state.history[this.state.stepNumber].squares;
-
-        switch(currentSquares[i]) {
-            //Black knight
-            case ('wK'):
-                if(i + 17 >= 0 && i + 17 <= 63 && Math.floor(i / 8) + 2 === Math.floor((i + 17) / 8)){ if(currentSquares[i+17].charAt(0) !== 'w'){newPotentialMoves[i+17] = true}}
-                if(i + 15 >= 0 && i + 15 <= 63 && Math.floor(i / 8) + 2 === Math.floor((i + 15) / 8)){if(currentSquares[i+15].charAt(0) !== 'w'){newPotentialMoves[i+15] = true}}
-                if(i + 10 >= 0 && i + 10 <= 63 && Math.floor(i / 8) + 1 === Math.floor((i + 10) / 8)){if(currentSquares[i+10].charAt(0) !== 'w'){newPotentialMoves[i+10] = true}}
-                if(i + 6 >= 0 && i + 6 <= 63 && Math.floor(i / 8) + 1 === Math.floor((i + 6) / 8)){if(currentSquares[i+6].charAt(0) !== 'w'){newPotentialMoves[i+6] = true}}
-                if(i - 6 >= 0 && i - 6 <= 63 && Math.floor(i / 8) - 1 === Math.floor((i - 6) / 8)){if(currentSquares[i-6].charAt(0) !== 'w'){newPotentialMoves[i-6] = true}}
-                if(i - 10 >= 0 && i - 10  <= 63 && Math.floor(i / 8) - 1 === Math.floor((i - 10) / 8)){if(currentSquares[i-10].charAt(0) !== 'w'){newPotentialMoves[i-10] = true}}
-                if(i - 15 >= 0 && i - 15 <= 63 && Math.floor(i / 8) - 2 === Math.floor((i - 15) / 8)){if(currentSquares[i-15].charAt(0) !== 'w'){newPotentialMoves[i-15] = true}}
-                if(i - 17 >= 0 && i - 17 <= 63  && Math.floor(i / 8) - 2 === Math.floor((i - 17) / 8)){if(currentSquares[i-17].charAt(0) !== 'w'){newPotentialMoves[i-17] = true}}
-                break;
-            //White knight
-            case ('bK'):
-                if(i + 17 >= 0 && i + 17 <= 63 && Math.floor(i / 8) + 2 === Math.floor((i + 17) / 8)){ if(currentSquares[i+17].charAt(0) !== 'b'){newPotentialMoves[i+17] = true}}
-                if(i + 15 >= 0 && i + 15 <= 63 && Math.floor(i / 8) + 2 === Math.floor((i + 15) / 8)){if(currentSquares[i+15].charAt(0) !== 'b'){newPotentialMoves[i+15] = true}}
-                if(i + 10 >= 0 && i + 10 <= 63 && Math.floor(i / 8) + 1 === Math.floor((i + 10) / 8)){if(currentSquares[i+10].charAt(0) !== 'b'){newPotentialMoves[i+10] = true}}
-                if(i + 6 >= 0 && i + 6 <= 63 && Math.floor(i / 8) + 1 === Math.floor((i + 6) / 8)){if(currentSquares[i+6].charAt(0) !== 'b'){newPotentialMoves[i+6] = true}}
-                if(i - 6 >= 0 && i - 6 <= 63 && Math.floor(i / 8) - 1 === Math.floor((i - 6) / 8)){if(currentSquares[i-6].charAt(0) !== 'b'){newPotentialMoves[i-6] = true}}
-                if(i - 10 >= 0 && i - 10  <= 63 && Math.floor(i / 8) - 1 === Math.floor((i - 10) / 8)){if(currentSquares[i-10].charAt(0) !== 'b'){newPotentialMoves[i-10] = true}}
-                if(i - 15 >= 0 && i - 15 <= 63 && Math.floor(i / 8) - 2 === Math.floor((i - 15) / 8)){if(currentSquares[i-15].charAt(0) !== 'b'){newPotentialMoves[i-15] = true}}
-                if(i - 17 >= 0 && i - 17 <= 63  && Math.floor(i / 8) - 2 === Math.floor((i - 17) / 8)){if(currentSquares[i-17].charAt(0) !== 'b'){newPotentialMoves[i-17] = true}}
-                break;
-            case ('bP'):
-                if(i+8 >= 0 && i+8 <= 63 && currentSquares[i+8].charAt(0) === 'e'){newPotentialMoves[i+8] = true}
-                if(i+9 >= 0 && i+9 <= 63 && currentSquares[i+9].charAt(0) === 'w'){newPotentialMoves[i+9] = true}
-                if(i+7 >= 0 && i+7 <= 63 && currentSquares[i+7].charAt(0) === 'w'){newPotentialMoves[i+7] = true}
-                break;
-            case ('wP'):
-                if(i-8 >= 0 && currentSquares[i-8].charAt(0) === 'e'){newPotentialMoves[i-8] = true}
-                break;
-        }
-        this.setState({
-            potentialMoves: newPotentialMoves
-        })
+        return calculateThreat(i, this.state.history[this.state.stepNumber].squares)
     }
 
     handleClick(i) {
@@ -86,10 +50,10 @@ class App extends React.Component {
             return;
         }
         if( !this.state.selected){
-            this.calculatePotentialMoves(i);
-
+            let potentialMoves = this.calculatePotentialMoves(i);
             this.setState({
-                selected: i
+                selected: i,
+                potentialMoves
             })
         }
         else if (this.state.potentialMoves[i]) {
@@ -107,7 +71,6 @@ class App extends React.Component {
                 potentialMoves: Array(64).fill(false)
             });
         }
-        //--------------
 
     }
 
