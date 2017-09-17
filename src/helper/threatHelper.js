@@ -7,9 +7,11 @@ export function calculateThreat(pos, board){
         case ('wK'):
         case ('bK'):
             return knightThreat(pos, board);
+        case ('bB'):
         case ('wB'):
             return bishopThreat(pos, board);
         case ('wR'):
+        case ('bR'):
             return rookThreat(pos, board);
         case ('wQ'):
             return queenThreat(pos, board);
@@ -74,8 +76,62 @@ function pawnThreat(pos, board) {
 
 function rookThreat(pos, board) {
     let threat = new Array(64).fill(false);
-    let enemyColor = board[pos] === 'wK' ? 'b' : 'w';
-
+    let enemyColor = board[pos] === 'wR' ? 'b' : 'w';
+    let counter = 1;
+    while(pos+8*counter >= 0 && pos+8*counter <= 63){
+        if(board[pos+8*counter] === 'e') {
+            threat[pos + 8 * counter] = true;
+        } else if (board[pos+8*counter].charAt(0) === enemyColor){
+            threat[pos + 8 * counter] = true;
+            break;
+        } else {
+            break;
+        }
+        counter++;
+    }
+    counter = 1;
+    while(pos-8*counter >= 0 && pos-8*counter <= 63){
+        if(board[pos-8*counter] === 'e') {
+            threat[pos - 8 * counter] = true;
+        }
+        else if (board[pos-8*counter].charAt(0) === enemyColor){
+            threat[pos - 8 * counter] = true;
+            break;
+        }
+        else {
+            break;
+        }
+        counter++;
+    }
+    counter = 1;
+    while(pos+counter >= 0 && pos+counter <= 63 && Math.floor(pos/8) === Math.floor((pos+counter)/8)){
+        if(board[pos+counter] === 'e') {
+            threat[pos + counter] = true;
+        }
+        else if (board[pos+counter].charAt(0) === enemyColor){
+            threat[pos+counter] = true;
+            break;
+        }
+        else {
+            break;
+        }
+        counter++;
+    }
+    counter = 1;
+    while(pos-counter >= 0 && pos-counter <= 63 && Math.floor(pos/8) === Math.floor((pos-counter)/8)){
+        if(board[pos-counter] === 'e') {
+            threat[pos-counter] = true;
+        }
+        else if (board[pos-counter].charAt(0) === enemyColor){
+            threat[pos-counter] = true;
+            break;
+        }
+        else {
+            break;
+        }
+        counter++;
+    }
+    return threat;
 }
 
 function bishopThreat(pos, board) {
