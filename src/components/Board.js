@@ -11,8 +11,9 @@ function Square(props) {
     if (props.potentialMoves[props.squareNumber]){
         color += ' moveOption';
     }
+    let currentTurn = props.currentPlayer === props.value.charAt(0) ? props.currentPlayer : '';
     return (
-        <button className={`square ${color}`} onClick={props.onClick}>
+        <button className={`square ${color} ${currentTurn}`} onClick={props.onClick}>
             {props.value.substring(1)}
         </button>
     );
@@ -26,6 +27,7 @@ export default class Board extends React.Component {
                 onClick={() => this.props.onClick(i)}
                 potentialMoves={this.props.moves}
                 squareNumber={i}
+                currentPlayer={this.props.currentPlayer}
             />
         );
     }

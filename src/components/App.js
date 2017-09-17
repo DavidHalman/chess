@@ -2,7 +2,7 @@ import React from 'react';
 import '../styles/App.css';
 import Board from '../components/Board.js';
 //import * as threat from '../helper/threatHelper.js'
-import { calculateThreat } from '../helper/threatHelper.js'
+import { calculateMovement } from '../helper/threatHelper.js'
 class App extends React.Component {
     constructor() {
         super();
@@ -24,39 +24,31 @@ class App extends React.Component {
             ],
             stepNumber: 0,
             selected: null,
-            xIsNext: true,
+            whiteIsNext: true,
             potentialMoves: Array(64).fill(false)
         };
 
     }
     calculatePotentialMoves(i) {
-        return calculateThreat(i, this.state.history[this.state.stepNumber].squares)
+        return calculateMovement(i, this.state.history[this.state.stepNumber].squares)
     }
 
     handleClick(i) {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
-
-        if(this.state.selected === i){
+        let currentTurn = this.state.whiteIsNext ? 'w' : 'b';
+        if(this.state.selected === null && currentTurn === squares[i].charAt(0)){
+            this.setState({
+                selected: i,
+                potentialMoves: this.calculatePotentialMoves(i)
+            })
+        } else if (this.state.selected === i ) {
             this.setState({
                 selected: null,
                 potentialMoves: Array(64).fill(false)
-            });
-            return;
-        }
-
-        if( !this.state.selected && !squares[i]) {
-            return;
-        }
-        if( !this.state.selected){
-            let potentialMoves = this.calculatePotentialMoves(i);
-            this.setState({
-                selected: i,
-                potentialMoves
             })
-        }
-        else if (this.state.potentialMoves[i]) {
+        } else if (this.state.potentialMoves[i]) {
             squares[i] = squares[this.state.selected];
             squares[this.state.selected] = 'e';
             this.setState({
@@ -67,17 +59,55 @@ class App extends React.Component {
                 ]),
                 selected: null,
                 stepNumber: history.length,
-                xIsNext: !this.state.xIsNext,
+                whiteIsNext: !this.state.whiteIsNext,
                 potentialMoves: Array(64).fill(false)
             });
         }
+
+
+
+        //----------------
+
+        // if(this.state.selected === i){
+        //     this.setState({
+        //         selected: null,
+        //         potentialMoves: Array(64).fill(false)
+        //     });
+        //     return;
+        // }
+        //
+        // if( !this.state.selected && !squares[i]) {
+        //     return;
+        // }
+        // if( !this.state.selected){
+        //     let potentialMoves = this.calculatePotentialMoves(i);
+        //     this.setState({
+        //         selected: i,
+        //         potentialMoves
+        //     })
+        // }
+        // else if (this.state.potentialMoves[i]) {
+        //     squares[i] = squares[this.state.selected];
+        //     squares[this.state.selected] = 'e';
+        //     this.setState({
+        //         history: history.concat([
+        //             {
+        //                 squares: squares
+        //             }
+        //         ]),
+        //         selected: null,
+        //         stepNumber: history.length,
+        //         whiteIsNext: !this.state.whiteIsNext,
+        //         potentialMoves: Array(64).fill(false)
+        //     });
+        // }
 
     }
 
     jumpTo(step) {
         this.setState({
             stepNumber: step,
-            xIsNext: (step % 2) === 0,
+            whiteIsNext: (step % 2) === 0,
             selected: null,
         });
     }
@@ -100,8 +130,14 @@ class App extends React.Component {
         // if (winner) {
         //     status = "Winner: " + winner;
         // } else {
-             status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+             status = "Next player: " + (this.state.whiteIsNext ? "White" : "Black");
         // }
+        let currentPiece = this.state.selected;
+
+        let showPlayerTurn = '';
+        if(this.state.selected === null){
+            showPlayerTurn = this.state.whiteIsNext ? 'w' : 'b';
+        }
 
         return (
             <div className="game">
@@ -110,10 +146,12 @@ class App extends React.Component {
                         squares={current.squares}
                         moves={this.state.potentialMoves}
                         onClick={i => this.handleClick(i)}
+                        currentPlayer={showPlayerTurn}
                     />
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
+                    <div>{currentPiece}</div>
                     <ol>{moves}</ol>
                 </div>
             </div>

@@ -6,16 +6,20 @@
     font-weight: bold;
     line-height: 34px;
     height: 34px;
-    margin-right: -1px;
-    margin-top: -1px;
     padding: 0;
     text-align: center;
     width: 34px;
 }
 .square.white {
+    background-color: maroon;
+}
+.square.white.w {
     background-color: red;
 }
 .square.black {
+    background-color: darkgreen;
+}
+.square.black.b {
     background-color: green;
 }
 .square.moveOption {

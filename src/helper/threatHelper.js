@@ -1,9 +1,9 @@
 
-export function calculateThreat(pos, board){
+export function calculateMovement(pos, board){
     switch(board[pos]){
         case ('wP'):
         case ('bP'):
-            return pawnThreat(pos, board);
+            return pawnMovement(pos, board);
         case ('wK'):
         case ('bK'):
             return knightThreat(pos, board);
@@ -17,12 +17,46 @@ export function calculateThreat(pos, board){
         case ('bQ'):
             return queenThreat(pos, board);
         case ('wKi'):
+        case ('bKi'):
             return kingThreat(pos, board);
         default:
-            console.log("Error");
-            return;
+            return Array(64).fill(false);
     }
-
+}
+//Calculate threat for king mmovement
+function calculateThreat(pos, board) {
+    let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
+    let combinedThreat = Array(64).fill(false);
+    for(let index = 0; index < 64; index++) {
+        switch(board[index]){
+            case ('wP'):
+            case ('bP'):
+                combinedThreat = arrayOR(pawnThreat(index, board), combinedThreat);
+                break;
+            case ('wK'):
+            case ('bK'):
+                combinedThreat = arrayOR(knightThreat(index, board), combinedThreat);
+                break;
+            case ('bB'):
+            case ('wB'):
+                combinedThreat = arrayOR(bishopThreat(index, board), combinedThreat);
+                break;
+            case ('wR'):
+            case ('bR'):
+                combinedThreat = arrayOR(rookThreat(index, board), combinedThreat);
+                break;
+            case ('wQ'):
+            case ('bQ'):
+                combinedThreat = arrayOR(queenThreat(index, board), combinedThreat);
+                break;
+            case ('wKi'):
+            case ('bKi'):
+                combinedThreat = arrayOR(bishopThreat(index, board), combinedThreat);
+                break;
+            default:
+                return Array(64).fill(false);
+        }
+    }
 }
 
 export function knightThreat(pos, board){
@@ -39,7 +73,7 @@ export function knightThreat(pos, board){
     return threat;
 }
 
-function pawnThreat(pos, board) {
+function pawnMovement(pos, board) {
     let threat = new Array(64).fill(false);
     let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
     if(enemyColor === 'w') {
@@ -65,6 +99,27 @@ function pawnThreat(pos, board) {
                 threat[pos - 16] = true;
             }
         }
+        if (pos - 9 >= 0 && pos - 9 <= 63 && board[pos - 9].charAt(0) === enemyColor) {
+            threat[pos - 9] = true
+        }
+        if (pos - 7 >= 0 && pos - 7 <= 63 && board[pos - 7].charAt(0) === enemyColor) {
+            threat[pos - 7] = true
+        }
+    }
+    return threat;
+}
+function pawnThreat(pos, board){
+    let threat = new Array(64).fill(false);
+    let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
+    if(enemyColor === 'w') {
+        if (pos + 9 >= 0 && pos + 9 <= 63 && board[pos + 9].charAt(0) === enemyColor) {
+            threat[pos + 9] = true
+        }
+        if (pos + 7 >= 0 && pos + 7 <= 63 && board[pos + 7].charAt(0) === enemyColor) {
+            threat[pos + 7] = true
+        }
+    }
+    else {
         if (pos - 9 >= 0 && pos - 9 <= 63 && board[pos - 9].charAt(0) === enemyColor) {
             threat[pos - 9] = true
         }
@@ -194,7 +249,32 @@ function queenThreat(pos, board) {
 }
 
 function kingThreat(pos, board) {
+    let threat = new Array(64).fill(false);
+    let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
+    if(pos-9 >= 0 && pos-9 <= 63) { threat[pos-9] = true;}
+    if(pos-8 >= 0 && pos-8 <= 63) { threat[pos-8] = true;}
+    if(pos-7 >= 0 && pos-7 <= 63) { threat[pos-7] = true;}
+    if(pos-1 >= 0 && pos-1 <= 63) { threat[pos-1] = true;}
+    if(pos+1 >= 0 && pos+1 <= 63) { threat[pos+1] = true;}
+    if(pos+7 >= 0 && pos+7 <= 63) { threat[pos+7] = true;}
+    if(pos+8 >= 0 && pos+8 <= 63) { threat[pos+8] = true;}
+    if(pos+9 >= 0 && pos+9 <= 63) { threat[pos+9] = true;}
+    return threat;
+}
 
+function kingMovement(pos, board) {
+    let threat = new Array(64).fill(false);
+    let allyColor = board[pos].charAt(0) === 'w' ? 'w' : 'b';
+    let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
+    if(pos-9 >= 0 && pos-9 <= 63 && board[pos-9].charAt(0) !== allyColor) { threat[pos-9] = true;}
+    if(pos-8 >= 0 && pos-8 <= 63 && board[pos-9].charAt(0) !== allyColor) { threat[pos-8] = true;}
+    if(pos-7 >= 0 && pos-7 <= 63 && board[pos-7].charAt(0) !== allyColor) { threat[pos-7] = true;}
+    if(pos-1 >= 0 && pos-1 <= 63 && board[pos-1].charAt(0) !== allyColor) { threat[pos-1] = true;}
+    if(pos+1 >= 0 && pos+1 <= 63 && board[pos+1].charAt(0) !== allyColor) { threat[pos+1] = true;}
+    if(pos+7 >= 0 && pos+7 <= 63 && board[pos+7].charAt(0) !== allyColor) { threat[pos+7] = true;}
+    if(pos+8 >= 0 && pos+8 <= 63 && board[pos+8].charAt(0) !== allyColor) { threat[pos+8] = true;}
+    if(pos+9 >= 0 && pos+9 <= 63 && board[pos+9].charAt(0) !== allyColor) { threat[pos+9] = true;}
+    return threat;
 }
 
 function arrayOR(array1, array2){
