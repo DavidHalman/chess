@@ -14,6 +14,7 @@ export function calculateThreat(pos, board){
         case ('bR'):
             return rookThreat(pos, board);
         case ('wQ'):
+        case ('bQ'):
             return queenThreat(pos, board);
         case ('wKi'):
             return kingThreat(pos, board);
@@ -26,7 +27,7 @@ export function calculateThreat(pos, board){
 
 export function knightThreat(pos, board){
     let threat = new Array(64).fill(false);
-    let enemyColor = board[pos] === 'wK' ? 'b' : 'w';
+    let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
     if(pos + 17 >= 0 && pos + 17 <= 63 && Math.floor(pos / 8) + 2 === Math.floor((pos + 17) / 8)){ if(board[pos+17].charAt(0) === enemyColor || board[pos+17].charAt(0) === 'e'){threat[pos+17] = true}}
     if(pos + 15 >= 0 && pos + 15 <= 63 && Math.floor(pos / 8) + 2 === Math.floor((pos + 15) / 8)){if(board[pos+15].charAt(0) === enemyColor || board[pos+15].charAt(0) === 'e'){threat[pos+15] = true}}
     if(pos + 10 >= 0 && pos + 10 <= 63 && Math.floor(pos / 8) + 1 === Math.floor((pos + 10) / 8)){if(board[pos+10].charAt(0) === enemyColor || board[pos+10].charAt(0) === 'e'){threat[pos+10] = true}}
@@ -40,7 +41,7 @@ export function knightThreat(pos, board){
 
 function pawnThreat(pos, board) {
     let threat = new Array(64).fill(false);
-    let enemyColor = board[pos] === 'wP' ? 'b' : 'w';
+    let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
     if(enemyColor === 'w') {
         //these moves are for the black pieces
         if (pos + 8 >= 0 && pos + 8 <= 63 && board[pos + 8].charAt(0) === 'e') {
@@ -76,7 +77,7 @@ function pawnThreat(pos, board) {
 
 function rookThreat(pos, board) {
     let threat = new Array(64).fill(false);
-    let enemyColor = board[pos] === 'wR' ? 'b' : 'w';
+    let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
     let counter = 1;
     while(pos+8*counter >= 0 && pos+8*counter <= 63){
         if(board[pos+8*counter] === 'e') {
@@ -136,7 +137,7 @@ function rookThreat(pos, board) {
 
 function bishopThreat(pos, board) {
     let threat = new Array(64).fill(false);
-    let enemyColor = board[pos] === 'wB' ? 'b' : 'w';
+    let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
     let counter = 1;
     while(pos + 9*counter >= 0 && pos + 9*counter <= 63 && Math.floor(pos/8) + counter === Math.floor( (pos+9*counter)/8)){
         if(board[pos+9*counter].charAt(0) === 'e'){
@@ -189,9 +190,21 @@ function bishopThreat(pos, board) {
 }
 
 function queenThreat(pos, board) {
-
+    return arrayOR(rookThreat(pos,board), bishopThreat(pos, board));
 }
 
 function kingThreat(pos, board) {
 
+}
+
+function arrayOR(array1, array2){
+    let index = 0;
+    let OR = new Array(Math.min(array1.length, array2.length)).fill(false);
+    while(index < array1.length && index < array2.length){
+        if(array1[index] || array2[index]){
+            OR[index] = true;
+        }
+        index++;
+    }
+    return OR;
 }
