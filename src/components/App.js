@@ -2,7 +2,7 @@ import React from 'react';
 import '../styles/App.css';
 import Board from '../components/Board.js';
 //import * as threat from '../helper/threatHelper.js'
-import { calculateMovement } from '../helper/threatHelper.js'
+import { calculateMovement, calculateThreat, kingMovement } from '../helper/threatHelper.js'
 class App extends React.Component {
     constructor() {
         super();
@@ -22,6 +22,10 @@ class App extends React.Component {
                     ],
                 }
             ],
+            check: {
+                white: false,
+                black: false
+            },
             stepNumber: 0,
             selected: null,
             whiteIsNext: true,
@@ -61,46 +65,17 @@ class App extends React.Component {
                 stepNumber: history.length,
                 whiteIsNext: !this.state.whiteIsNext,
                 potentialMoves: Array(64).fill(false)
+
+            }, () => {
+                let checkAndWinner = calculateCheck(this.state.history[this.state.stepNumber].squares);
+                this.setState({
+                    check: checkAndWinner.check,
+                    winner: checkAndWinner.winner
+                })
             });
         }
 
 
-
-        //----------------
-
-        // if(this.state.selected === i){
-        //     this.setState({
-        //         selected: null,
-        //         potentialMoves: Array(64).fill(false)
-        //     });
-        //     return;
-        // }
-        //
-        // if( !this.state.selected && !squares[i]) {
-        //     return;
-        // }
-        // if( !this.state.selected){
-        //     let potentialMoves = this.calculatePotentialMoves(i);
-        //     this.setState({
-        //         selected: i,
-        //         potentialMoves
-        //     })
-        // }
-        // else if (this.state.potentialMoves[i]) {
-        //     squares[i] = squares[this.state.selected];
-        //     squares[this.state.selected] = 'e';
-        //     this.setState({
-        //         history: history.concat([
-        //             {
-        //                 squares: squares
-        //             }
-        //         ]),
-        //         selected: null,
-        //         stepNumber: history.length,
-        //         whiteIsNext: !this.state.whiteIsNext,
-        //         potentialMoves: Array(64).fill(false)
-        //     });
-        // }
 
     }
 
@@ -125,13 +100,7 @@ class App extends React.Component {
                 </li>
             );
         });
-
-        let status;
-        // if (winner) {
-        //     status = "Winner: " + winner;
-        // } else {
-             status = "Next player: " + (this.state.whiteIsNext ? "White" : "Black");
-        // }
+        let status = "Next player: " + (this.state.whiteIsNext ? "White" : "Black");
         let currentPiece = this.state.selected;
 
         let showPlayerTurn = '';
@@ -161,24 +130,54 @@ class App extends React.Component {
 
 // ========================================
 
-function calculateWinner(squares) {
-    const lines = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ];
-    for (let i = 0; i < lines.length; i++) {
-        const [a, b, c] = lines[i];
-        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
+function calculateCheck(board) {
+    let check = {
+        white: false,
+        black: false
+    };
+    let winner = {
+        white: false,
+        black: false,
+    };
+    for(let index = 0; index < 64; index++){
+        if(board[index] === 'wKi'){
+            let blackTeamThreat = calculateThreat(index, board);
+            let whiteKingMovement = kingMovement(index, board);
+            if(blackTeamThreat[index]){
+                check.white = true;
+            }
+            let whiteKingCanMove = false;
+            for(let counter = 0; counter < 63; counter++){
+                if(whiteKingMovement[counter]){
+                    whiteKingCanMove = true;
+                }
+            }
+            if(!whiteKingCanMove && check.white){
+                winner.black = true;
+            }
+        }
+        if(board[index] === 'bKi'){
+            let whiteTeamThreat = calculateThreat(index, board);
+            let blackKingMovement = kingMovement(index, board);
+            if(whiteTeamThreat[index]){
+                check.black = true;
+            }
+
+            let blackKingCanMove = false;
+            for(let counter = 0; counter < 63; counter++){
+                if(blackKingMovement[counter]){
+                    blackKingCanMove = true;
+                }
+            }
+            if(!blackKingCanMove && check.black){
+                winner.white = true;
+            }
         }
     }
-    return null;
+    return {
+        check,
+        winner
+    }
 }
 
 export default App;

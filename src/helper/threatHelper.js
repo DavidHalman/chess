@@ -364,7 +364,7 @@ function kingThreat(pos, board) {
     return threat;
 }
 
-function kingMovement(pos, board) {
+export function kingMovement(pos, board) {
     let movement = new Array(64).fill(false);
     let allyColor = board[pos].charAt(0) === 'w' ? 'w' : 'b';
     let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
