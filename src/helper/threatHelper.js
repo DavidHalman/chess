@@ -207,6 +207,9 @@ function rookThreat(pos, board) {
             threat[pos + 8 * counter] = true;
         } else {
             threat[pos + 8 * counter] = true;
+            if(board[pos+8*counter].slice(1) === 'Ki' && pos+16 < 64 && pos+16 > 0){
+                threat[pos+16] = true;
+            }
             break;
         }
         counter++;
@@ -217,6 +220,9 @@ function rookThreat(pos, board) {
             threat[pos - 8 * counter] = true;
         } else {
             threat[pos - 8 * counter] = true;
+            if(board[pos-8*counter].slice(1) === 'Ki' && pos-16 < 64 && pos-16 > 0){
+                threat[pos-16] = true;
+            }
             break;
         }
         counter++;
@@ -226,6 +232,10 @@ function rookThreat(pos, board) {
         if(board[pos+counter] === 'e') {
             threat[pos + counter] = true;
         } else {
+            debugger;
+            if((pos+counter+1) > 0 && (pos+counter+1) < 64 && board[pos+counter].slice(1) === 'Ki' && Math.floor(pos/8) === Math.floor((pos+counter+1)/8)){
+                threat[pos+counter+1] = true;
+            }
             threat[pos+counter] = true;
             break;
         }
@@ -236,6 +246,9 @@ function rookThreat(pos, board) {
         if(board[pos-counter] === 'e') {
             threat[pos-counter] = true;
         } else {
+            if((pos-counter-1) > 0 && (pos-counter-1) < 64 && board[pos-counter].slice(1) === 'Ki' && Math.floor(pos/8) === Math.floor((pos-counter-1)/8)){
+                threat[pos-counter-1] = true;
+            }
             threat[pos-counter] = true;
             break;
         }
@@ -390,10 +403,11 @@ export function simulateForCheckmateOnCheck (board, checkedPlayer){
             let simulatedMoves = calculateMovement(pieceIndex, board);
             for(let potentialMoveIndex = 0; potentialMoveIndex < 64; potentialMoveIndex++){
                 if(simulatedMoves[potentialMoveIndex]) {
-                    let simulatedBoard = board;
+                    let simulatedBoard = board.slice();
                     simulatedBoard[potentialMoveIndex] = simulatedBoard[pieceIndex];
                     simulatedBoard[pieceIndex] = 'e';
-                    let check = calculateCheck(kingLocation, simulatedBoard);
+                    let simulatedKingLocation = findKing(simulatedBoard, checkedPlayer);
+                    let check = calculateCheck(simulatedKingLocation, simulatedBoard);
                     if(checkedPlayer === 'w' && check.w === false){
                         return false;
                     }

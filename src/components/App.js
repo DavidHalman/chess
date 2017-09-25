@@ -11,22 +11,22 @@ class App extends React.Component {
             history: [
                 {
                     squares: [
-                        // 'bR', 'bK', 'bB', 'bKi', 'bQ', 'bB', 'bK', 'bR',
-                        // 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
-                        // 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        // 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        // 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        // 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        // 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
-                        // 'wR', 'wK', 'wB', 'wKi', 'wQ', 'wB', 'wK', 'wR',
-                        'bKi', 'bR', 'e', 'e', 'e', 'e', 'e', 'e',
-                        'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'wKi',
-                        'bR', 'e', 'e', 'wR', 'e', 'e', 'e', 'e',
-                        'bR', 'e', 'e', 'e', 'wR', 'e', 'e', 'e',
-                        'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        'bR', 'bK', 'bB', 'bKi', 'bQ', 'bB', 'bK', 'bR',
+                        'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
+                        'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
+                        'wR', 'wK', 'wB', 'wKi', 'wQ', 'wB', 'wK', 'wR',
+                        // 'bKi', 'bR', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'bR', 'e', 'e', 'wR', 'e', 'e', 'e', 'e',
+                        // 'bR', 'e', 'e', 'e', 'wR', 'e', 'e', 'wKi',
+                        // 'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
                     ],
                 }
             ],
@@ -79,10 +79,10 @@ class App extends React.Component {
                 let whiteWin = false;
                 let blackWin = false;
                 if(check.w){
-                     let blackWin = simulateForCheckmateOnCheck(this.state.history[this.state.stepNumber].squares, 'w');
+                    blackWin = simulateForCheckmateOnCheck(this.state.history[this.state.stepNumber].squares, 'w');
                 }
                 if(check.b){
-                    let whiteWin = simulateForCheckmateOnCheck(this.state.history[this.state.stepNumber].squares, 'b');
+                    whiteWin = simulateForCheckmateOnCheck(this.state.history[this.state.stepNumber].squares, 'b');
                 }
                 debugger;
                 this.setState({
