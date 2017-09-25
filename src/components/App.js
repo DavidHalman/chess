@@ -2,7 +2,7 @@ import React from 'react';
 import '../styles/App.css';
 import Board from '../components/Board.js';
 //import * as threat from '../helper/threatHelper.js'
-import { calculateMovement, calculateThreat, kingMovement } from '../helper/threatHelper.js'
+import { calculateMovement, calculateThreat, kingMovement, calculateCheck, simulateForCheckmateOnCheck } from '../helper/threatHelper.js'
 class App extends React.Component {
     constructor() {
         super();
@@ -11,14 +11,22 @@ class App extends React.Component {
             history: [
                 {
                     squares: [
-                        'bR', 'bK', 'bB', 'bKi', 'bQ', 'bB', 'bK', 'bR',
-                        'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
-                        'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
-                        'wR', 'wK', 'wB', 'wKi', 'wQ', 'wB', 'wK', 'wR',
+                        // 'bR', 'bK', 'bB', 'bKi', 'bQ', 'bB', 'bK', 'bR',
+                        // 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
+                        // 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
+                        // 'wR', 'wK', 'wB', 'wKi', 'wQ', 'wB', 'wK', 'wR',
+                        'bKi', 'bR', 'e', 'e', 'e', 'e', 'e', 'e',
+                        'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'wKi',
+                        'bR', 'e', 'e', 'wR', 'e', 'e', 'e', 'e',
+                        'bR', 'e', 'e', 'e', 'wR', 'e', 'e', 'e',
+                        'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
                     ],
                 }
             ],
@@ -67,10 +75,22 @@ class App extends React.Component {
                 potentialMoves: Array(64).fill(false)
 
             }, () => {
-                let checkAndWinner = calculateCheck(this.state.history[this.state.stepNumber].squares);
+                let check = calculateCheck(this.state.history[this.state.stepNumber].squares);
+                let whiteWin = false;
+                let blackWin = false;
+                if(check.w){
+                     let blackWin = simulateForCheckmateOnCheck(this.state.history[this.state.stepNumber].squares, 'w');
+                }
+                if(check.b){
+                    let whiteWin = simulateForCheckmateOnCheck(this.state.history[this.state.stepNumber].squares, 'b');
+                }
+                debugger;
                 this.setState({
-                    check: checkAndWinner.check,
-                    winner: checkAndWinner.winner
+                    check: check,
+                    winner: {
+                        blackWin: blackWin,
+                        whiteWin: whiteWin
+                    }
                 })
             });
         }
@@ -130,54 +150,6 @@ class App extends React.Component {
 
 // ========================================
 
-function calculateCheck(board) {
-    let check = {
-        white: false,
-        black: false
-    };
-    let winner = {
-        white: false,
-        black: false,
-    };
-    for(let index = 0; index < 64; index++){
-        if(board[index] === 'wKi'){
-            let blackTeamThreat = calculateThreat(index, board);
-            let whiteKingMovement = kingMovement(index, board);
-            if(blackTeamThreat[index]){
-                check.white = true;
-            }
-            let whiteKingCanMove = false;
-            for(let counter = 0; counter < 63; counter++){
-                if(whiteKingMovement[counter]){
-                    whiteKingCanMove = true;
-                }
-            }
-            if(!whiteKingCanMove && check.white){
-                winner.black = true;
-            }
-        }
-        if(board[index] === 'bKi'){
-            let whiteTeamThreat = calculateThreat(index, board);
-            let blackKingMovement = kingMovement(index, board);
-            if(whiteTeamThreat[index]){
-                check.black = true;
-            }
 
-            let blackKingCanMove = false;
-            for(let counter = 0; counter < 63; counter++){
-                if(blackKingMovement[counter]){
-                    blackKingCanMove = true;
-                }
-            }
-            if(!blackKingCanMove && check.black){
-                winner.white = true;
-            }
-        }
-    }
-    return {
-        check,
-        winner
-    }
-}
 
 export default App;

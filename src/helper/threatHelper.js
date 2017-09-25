@@ -380,6 +380,41 @@ export function kingMovement(pos, board) {
     return movement;
 }
 
+// Function will return true if player is in checkmate
+// checkedPlayer should be either 'w' or 'b'
+export function simulateForCheckmateOnCheck (board, checkedPlayer){
+    debugger;
+    let kingLocation = findKing(board, checkedPlayer);
+    for(let pieceIndex = 0; pieceIndex < 64; pieceIndex++){
+        if(board[pieceIndex].charAt(0) === checkedPlayer) {
+            let simulatedMoves = calculateMovement(pieceIndex, board);
+            for(let potentialMoveIndex = 0; potentialMoveIndex < 64; potentialMoveIndex++){
+                if(simulatedMoves[potentialMoveIndex]) {
+                    let simulatedBoard = board;
+                    simulatedBoard[potentialMoveIndex] = simulatedBoard[pieceIndex];
+                    simulatedBoard[pieceIndex] = 'e';
+                    let check = calculateCheck(kingLocation, simulatedBoard);
+                    if(checkedPlayer === 'w' && check.w === false){
+                        return false;
+                    }
+                    if(checkedPlayer === 'b' && check.b === false){
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+
+function findKing(board, player){
+    for(let index = 0; index < 64; index++){
+        if(board[index] === `${player}Ki`) {
+            return index;
+        }
+    }
+}
+
 function arrayOR(array1, array2){
     let index = 0;
     let OR = new Array(Math.min(array1.length, array2.length)).fill(false);
@@ -390,4 +425,28 @@ function arrayOR(array1, array2){
         index++;
     }
     return OR;
+}
+
+export function calculateCheck(board) {
+    let check = {
+        w: false,
+        b: false
+    };
+    for(let index = 0; index < 64; index++){
+        if(board[index] === 'wKi'){
+            let blackTeamThreat = calculateThreat(index, board);
+            let whiteKingMovement = kingMovement(index, board);
+            if(blackTeamThreat[index]){
+                check.w = true;
+            }
+        }
+        if(board[index] === 'bKi'){
+            let whiteTeamThreat = calculateThreat(index, board);
+            let blackKingMovement = kingMovement(index, board);
+            if(whiteTeamThreat[index]){
+                check.b = true;
+            }
+        }
+    }
+    return check;
 }
