@@ -232,7 +232,6 @@ function rookThreat(pos, board) {
         if(board[pos+counter] === 'e') {
             threat[pos + counter] = true;
         } else {
-            debugger;
             if((pos+counter+1) > 0 && (pos+counter+1) < 64 && board[pos+counter].slice(1) === 'Ki' && Math.floor(pos/8) === Math.floor((pos+counter+1)/8)){
                 threat[pos+counter+1] = true;
             }
@@ -366,14 +365,14 @@ function queenMovement(pos, board) {
 function kingThreat(pos, board) {
     let threat = new Array(64).fill(false);
     let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
-    if(pos-9 >= 0 && pos-9 <= 63) { threat[pos-9] = true;}
+    if(pos-9 >= 0 && pos-9 <= 63 && Math.floor(pos/8) === Math.floor((pos-9)/8) + 1) { threat[pos-9] = true;}
     if(pos-8 >= 0 && pos-8 <= 63) { threat[pos-8] = true;}
-    if(pos-7 >= 0 && pos-7 <= 63) { threat[pos-7] = true;}
-    if(pos-1 >= 0 && pos-1 <= 63) { threat[pos-1] = true;}
-    if(pos+1 >= 0 && pos+1 <= 63) { threat[pos+1] = true;}
-    if(pos+7 >= 0 && pos+7 <= 63) { threat[pos+7] = true;}
+    if(pos-7 >= 0 && pos-7 <= 63 && Math.floor(pos/8) === Math.floor((pos-7)/8) + 1) { threat[pos-7] = true;}
+    if(pos-1 >= 0 && pos-1 <= 63 && Math.floor(pos/8) === Math.floor((pos-1)/8)) { threat[pos-1] = true;}
+    if(pos+1 >= 0 && pos+1 <= 63 && Math.floor(pos/8) === Math.floor((pos+1)/8)) { threat[pos+1] = true;}
+    if(pos+7 >= 0 && pos+7 <= 63 && Math.floor(pos/8) === Math.floor((pos+7)/8) + 1) { threat[pos+7] = true;}
     if(pos+8 >= 0 && pos+8 <= 63) { threat[pos+8] = true;}
-    if(pos+9 >= 0 && pos+9 <= 63) { threat[pos+9] = true;}
+    if(pos+9 >= 0 && pos+9 <= 63 && Math.floor(pos/8) === Math.floor((pos+9)/8) - 1) { threat[pos+9] = true;}
     return threat;
 }
 
@@ -382,14 +381,14 @@ export function kingMovement(pos, board) {
     let allyColor = board[pos].charAt(0) === 'w' ? 'w' : 'b';
     let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
     let threat = calculateThreat(pos, board);
-    if(pos-9 >= 0 && pos-9 <= 63 && board[pos-9].charAt(0) !== allyColor && threat[pos-9] === false) { movement[pos-9] = true;}
-    if(pos-8 >= 0 && pos-8 <= 63 && board[pos-9].charAt(0) !== allyColor && threat[pos-8] === false) { movement[pos-8] = true;}
-    if(pos-7 >= 0 && pos-7 <= 63 && board[pos-7].charAt(0) !== allyColor && threat[pos-7] === false) { movement[pos-7] = true;}
-    if(pos-1 >= 0 && pos-1 <= 63 && board[pos-1].charAt(0) !== allyColor && threat[pos-1] === false) { movement[pos-1] = true;}
-    if(pos+1 >= 0 && pos+1 <= 63 && board[pos+1].charAt(0) !== allyColor && threat[pos+1] === false) { movement[pos+1] = true;}
-    if(pos+7 >= 0 && pos+7 <= 63 && board[pos+7].charAt(0) !== allyColor && threat[pos+7] === false) { movement[pos+7] = true;}
+    if(pos-9 >= 0 && pos-9 <= 63 && board[pos-9].charAt(0) !== allyColor && threat[pos-9] === false && Math.floor(pos/8) === Math.floor((pos-9)/8) + 1) { movement[pos-9] = true;}
+    if(pos-8 >= 0 && pos-8 <= 63 && board[pos-8].charAt(0) !== allyColor && threat[pos-8] === false) { movement[pos-8] = true;}
+    if(pos-7 >= 0 && pos-7 <= 63 && board[pos-7].charAt(0) !== allyColor && threat[pos-7] === false && Math.floor(pos/8) === Math.floor((pos-7)/8) + 1) { movement[pos-7] = true;}
+    if(pos-1 >= 0 && pos-1 <= 63 && board[pos-1].charAt(0) !== allyColor && threat[pos-1] === false && Math.floor(pos/8) === Math.floor((pos-1)/8)){ movement[pos-1] = true;}
+    if(pos+1 >= 0 && pos+1 <= 63 && board[pos+1].charAt(0) !== allyColor && threat[pos+1] === false && Math.floor(pos/8) === Math.floor((pos+1)/8)) { movement[pos+1] = true;}
+    if(pos+7 >= 0 && pos+7 <= 63 && board[pos+7].charAt(0) !== allyColor && threat[pos+7] === false && Math.floor(pos/8) === Math.floor((pos+7)/8) - 1) { movement[pos+7] = true;}
     if(pos+8 >= 0 && pos+8 <= 63 && board[pos+8].charAt(0) !== allyColor && threat[pos+8] === false) { movement[pos+8] = true;}
-    if(pos+9 >= 0 && pos+9 <= 63 && board[pos+9].charAt(0) !== allyColor && threat[pos+9] === false) { movement[pos+9] = true;}
+    if(pos+9 >= 0 && pos+9 <= 63 && board[pos+9].charAt(0) !== allyColor && threat[pos+9] === false && Math.floor(pos/8) === Math.floor((pos+9)/8) - 1) { movement[pos+9] = true;}
     return movement;
 }
 
