@@ -91,11 +91,11 @@ function pawnMovement(pos, board) {
                 threat[pos + 16] = true;
             }
         }
-        if (pos + 9 >= 0 && pos + 9 <= 63 && board[pos + 9].charAt(0) === enemyColor) {
-            threat[pos + 9] = true
+        if (pos + 9 >= 0 && pos + 9 <= 63 && board[pos + 9].charAt(0) === enemyColor && Math.floor(pos/8) === Math.floor((pos+9)/8)-1) {
+            threat[pos + 9] = true;
         }
-        if (pos + 7 >= 0 && pos + 7 <= 63 && board[pos + 7].charAt(0) === enemyColor) {
-            threat[pos + 7] = true
+        if (pos + 7 >= 0 && pos + 7 <= 63 && board[pos + 7].charAt(0) === enemyColor && Math.floor(pos/8) === Math.floor((pos+7)/8)-1) {
+            threat[pos + 7] = true;
         }
     }
     else {
@@ -106,11 +106,11 @@ function pawnMovement(pos, board) {
                 threat[pos - 16] = true;
             }
         }
-        if (pos - 9 >= 0 && pos - 9 <= 63 && board[pos - 9].charAt(0) === enemyColor) {
-            threat[pos - 9] = true
+        if (pos - 9 >= 0 && pos - 9 <= 63 && board[pos - 9].charAt(0) === enemyColor && Math.floor(pos/8) === Math.floor((pos-9)/8)+1) {
+            threat[pos - 9] = true;
         }
-        if (pos - 7 >= 0 && pos - 7 <= 63 && board[pos - 7].charAt(0) === enemyColor) {
-            threat[pos - 7] = true
+        if (pos - 7 >= 0 && pos - 7 <= 63 && board[pos - 7].charAt(0) === enemyColor && Math.floor(pos/8) === Math.floor((pos-7)/8)+1) {
+            threat[pos - 7] = true;
         }
     }
     return threat;
@@ -120,19 +120,19 @@ function pawnThreat(pos, board){
     //TODO this can be shrunk by a line of code I think
     let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
     if(enemyColor === 'w') {
-        if (pos + 9 >= 0 && pos + 9 <= 63) {
-            threat[pos + 9] = true
+        if (pos + 9 >= 0 && pos + 9 <= 63 && Math.floor(pos/8) === Math.floor((pos+9)/8)-1) {
+            threat[pos + 9] = true;
         }
-        if (pos + 7 >= 0 && pos + 7 <= 63) {
-            threat[pos + 7] = true
+        if (pos + 7 >= 0 && pos + 7 <= 63 && Math.floor(pos/8) === Math.floor((pos+7)/8)-1) {
+            threat[pos + 7] = true;
         }
     }
     else {
-        if (pos - 9 >= 0 && pos - 9 <= 63) {
-            threat[pos - 9] = true
+        if (pos - 9 >= 0 && pos - 9 <= 63 && Math.floor(pos/8) === Math.floor((pos-9)/8)+1) {
+            threat[pos - 9] = true;
         }
-        if (pos - 7 >= 0 && pos - 7 <= 63) {
-            threat[pos - 7] = true
+        if (pos - 7 >= 0 && pos - 7 <= 63  && Math.floor(pos/8) === Math.floor((pos-7)/8)+1) {
+            threat[pos - 7] = true;
         }
     }
     return threat;
