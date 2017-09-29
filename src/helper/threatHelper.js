@@ -1,4 +1,3 @@
-
 export function calculateMovement(pos, board){
     switch(board[pos]){
         case ('wP'):
@@ -66,6 +65,7 @@ export function knightThreat(pos, board){
     if(pos - 17 >= 0 && pos - 17 <= 63  && Math.floor(pos / 8) - 2 === Math.floor((pos - 17) / 8)){threat[pos-17] = true}
     return threat;
 }
+//TODO Change these nested if statements???
 function knightMovement(pos, board) {
     let movement = new Array(64).fill(false);
     let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
@@ -83,57 +83,33 @@ function knightMovement(pos, board) {
 function pawnMovement(pos, board) {
     let threat = new Array(64).fill(false);
     let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
-    if(enemyColor === 'w') {
+    if (enemyColor === 'w') {
         //these moves are for the black pieces
         if (pos + 8 >= 0 && pos + 8 <= 63 && board[pos + 8].charAt(0) === 'e') {
             threat[pos + 8] = true;
-            if (Math.floor(pos / 8) === 1 && board[pos + 16].charAt(0) === 'e') {
-                threat[pos + 16] = true;
-            }
+            threat[pos + 16] = Math.floor(pos / 8) === 1 && board[pos + 16].charAt(0) === 'e';
         }
-        if (pos + 9 >= 0 && pos + 9 <= 63 && board[pos + 9].charAt(0) === enemyColor && Math.floor(pos/8) === Math.floor((pos+9)/8)-1) {
-            threat[pos + 9] = true;
-        }
-        if (pos + 7 >= 0 && pos + 7 <= 63 && board[pos + 7].charAt(0) === enemyColor && Math.floor(pos/8) === Math.floor((pos+7)/8)-1) {
-            threat[pos + 7] = true;
-        }
-    }
-    else {
+        threat[pos + 9] = pos + 9 >= 0 && pos + 9 <= 63 && board[pos + 9].charAt(0) === enemyColor && Math.floor(pos / 8) === Math.floor((pos + 9) / 8)-1;
+        threat[pos + 7] = pos + 7 >= 0 && pos + 7 <= 63 && board[pos + 7].charAt(0) === enemyColor && Math.floor(pos / 8) === Math.floor((pos + 7) / 8)-1;
+    } else {
         // these moves are for the white pieces
         if (pos - 8 >= 0 && pos - 8 <= 63 && board[pos - 8].charAt(0) === 'e') {
             threat[pos - 8] = true;
-            if (Math.floor(pos / 8) === 6 && board[pos - 16].charAt(0) === 'e') {
-                threat[pos - 16] = true;
-            }
+            threat[pos - 16] = Math.floor(pos / 8) === 6 && board[pos - 16].charAt(0) === 'e';
         }
-        if (pos - 9 >= 0 && pos - 9 <= 63 && board[pos - 9].charAt(0) === enemyColor && Math.floor(pos/8) === Math.floor((pos-9)/8)+1) {
-            threat[pos - 9] = true;
-        }
-        if (pos - 7 >= 0 && pos - 7 <= 63 && board[pos - 7].charAt(0) === enemyColor && Math.floor(pos/8) === Math.floor((pos-7)/8)+1) {
-            threat[pos - 7] = true;
-        }
+        threat[pos - 9] = pos - 9 >= 0 && pos - 9 <= 63 && board[pos - 9].charAt(0) === enemyColor && Math.floor(pos / 8) === Math.floor((pos - 9) / 8) + 1;
+        threat[pos - 7] = pos - 7 >= 0 && pos - 7 <= 63 && board[pos - 7].charAt(0) === enemyColor && Math.floor(pos / 8) === Math.floor((pos - 7) / 8) + 1;
     }
     return threat;
 }
 function pawnThreat(pos, board){
     let threat = new Array(64).fill(false);
-    //TODO this can be shrunk by a line of code I think
-    let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
-    if(enemyColor === 'w') {
-        if (pos + 9 >= 0 && pos + 9 <= 63 && Math.floor(pos/8) === Math.floor((pos+9)/8)-1) {
-            threat[pos + 9] = true;
-        }
-        if (pos + 7 >= 0 && pos + 7 <= 63 && Math.floor(pos/8) === Math.floor((pos+7)/8)-1) {
-            threat[pos + 7] = true;
-        }
-    }
-    else {
-        if (pos - 9 >= 0 && pos - 9 <= 63 && Math.floor(pos/8) === Math.floor((pos-9)/8)+1) {
-            threat[pos - 9] = true;
-        }
-        if (pos - 7 >= 0 && pos - 7 <= 63  && Math.floor(pos/8) === Math.floor((pos-7)/8)+1) {
-            threat[pos - 7] = true;
-        }
+    if(board[pos].charAt(0) === 'b') {
+        threat[pos + 9] = pos + 9 >= 0 && pos + 9 <= 63 && Math.floor(pos / 8) === Math.floor((pos + 9) / 8) - 1;
+        threat[pos + 7] = pos + 7 >= 0 && pos + 7 <= 63 && Math.floor(pos / 8) === Math.floor((pos + 7) / 8) - 1;
+    } else {
+        threat[pos - 9] = pos - 9 >= 0 && pos - 9 <= 63 && Math.floor(pos / 8) === Math.floor((pos - 9) / 8) + 1;
+        threat[pos - 7] = pos - 7 >= 0 && pos - 7 <= 63 && Math.floor(pos / 8) === Math.floor((pos - 7) / 8) + 1;
     }
     return threat;
 }
@@ -200,55 +176,38 @@ function rookMovement(pos, board) {
 
 function rookThreat(pos, board) {
     let threat = new Array(64).fill(false);
-    let enemyColor = board[pos].charAt(0) === 'w' ? 'b' : 'w';
     let counter = 1;
     while(pos+8*counter >= 0 && pos+8*counter <= 63){
-        if(board[pos+8*counter] === 'e') {
-            threat[pos + 8 * counter] = true;
-        } else {
-            threat[pos + 8 * counter] = true;
-            if(board[pos+8*counter].slice(1) === 'Ki' && pos+16 < 64 && pos+16 > 0){
-                threat[pos+16] = true;
-            }
+        threat[pos + 8 * counter] = true;
+        if(board[pos+8*counter] !== 'e') {
+            threat[pos + 16] = board[pos+8*counter].slice(1) === 'Ki' && pos+16 < 64 && pos+16 > 0;
             break;
         }
         counter++;
     }
     counter = 1;
     while(pos-8*counter >= 0 && pos-8*counter <= 63){
-        if(board[pos-8*counter] === 'e') {
-            threat[pos - 8 * counter] = true;
-        } else {
-            threat[pos - 8 * counter] = true;
-            if(board[pos-8*counter].slice(1) === 'Ki' && pos-16 < 64 && pos-16 > 0){
-                threat[pos-16] = true;
-            }
+        threat[pos - 8 * counter] = true;
+        if(board[pos-8*counter] !== 'e') {
+            threat[pos-16] = board[pos-8*counter].slice(1) === 'Ki' && pos-16 < 64 && pos-16 > 0;
             break;
         }
         counter++;
     }
     counter = 1;
     while(pos+counter >= 0 && pos+counter <= 63 && Math.floor(pos/8) === Math.floor((pos+counter)/8)){
-        if(board[pos+counter] === 'e') {
-            threat[pos + counter] = true;
-        } else {
-            if((pos+counter+1) > 0 && (pos+counter+1) < 64 && board[pos+counter].slice(1) === 'Ki' && Math.floor(pos/8) === Math.floor((pos+counter+1)/8)){
-                threat[pos+counter+1] = true;
-            }
-            threat[pos+counter] = true;
+        threat[pos + counter] = true;
+        if(board[pos+counter] !== 'e') {
+            threat[pos + counter + 1] = (pos+counter+1) > 0 && (pos+counter+1) < 64 && board[pos+counter].slice(1) === 'Ki' && Math.floor(pos/8) === Math.floor((pos+counter+1)/8);
             break;
         }
         counter++;
     }
     counter = 1;
     while(pos-counter >= 0 && pos-counter <= 63 && Math.floor(pos/8) === Math.floor((pos-counter)/8)){
-        if(board[pos-counter] === 'e') {
-            threat[pos-counter] = true;
-        } else {
-            if((pos-counter-1) > 0 && (pos-counter-1) < 64 && board[pos-counter].slice(1) === 'Ki' && Math.floor(pos/8) === Math.floor((pos-counter-1)/8)){
-                threat[pos-counter-1] = true;
-            }
-            threat[pos-counter] = true;
+        threat[pos-counter] = true;
+        if(board[pos-counter] !== 'e') {
+            threat[pos - counter - 1] = (pos - counter - 1) > 0 && (pos - counter - 1) < 64 && board[pos - counter].slice(1) === 'Ki' && Math.floor(pos / 8) === Math.floor((pos - counter - 1)/8);
             break;
         }
         counter++;
