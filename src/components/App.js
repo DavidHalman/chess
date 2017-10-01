@@ -11,22 +11,22 @@ class App extends React.Component {
             history: [
                 {
                     squares: [
-                        'bR', 'bK', 'bB', 'bKi', 'bQ', 'bB', 'bK', 'bR',
+                        'bR', 'bK', 'bB', 'bQ', 'bKi', 'bB', 'bK', 'bR',
                         'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
                         'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
                         'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
                         'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
                         'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
                         'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
-                        'wR', 'wK', 'wB', 'wKi', 'wQ', 'wB', 'wK', 'wR',
-                        // 'bKi', 'bR', 'e', 'e', 'e', 'e', 'e', 'e',
+                        'wR', 'wK', 'wB', 'wQ', 'wKi', 'wB', 'wK', 'wR',
+                        // 'bKi', 'bR', 'e', 'bR', 'e', 'e', 'e', 'e',
                         // 'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        // 'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        // 'bR', 'e', 'e', 'wR', 'e', 'e', 'e', 'e',
-                        // 'bR', 'e', 'e', 'e', 'wR', 'e', 'e', 'wKi',
-                        // 'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        // 'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                        // 'bR', 'e', 'e', 'e', 'e', 'e', 'e', 'wP',
+                        // 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+                        // 'e', 'e', 'e', 'e', 'e', 'e', 'wP', 'e',
+                        // 'e', 'e', 'wKi', 'e', 'e', 'e', 'e', 'e',
                     ],
                 }
             ],
@@ -50,6 +50,7 @@ class App extends React.Component {
         const current = history[history.length - 1];
         const squares = current.squares.slice();
         let currentTurn = this.state.whiteIsNext ? 'w' : 'b';
+
         if(this.state.selected === null && currentTurn === squares[i].charAt(0)){
             this.setState({
                 selected: i,
