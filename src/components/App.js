@@ -72,6 +72,13 @@ class App extends React.Component {
         } else if (this.state.potentialMoves[i]) {
             squares[i] = squares[this.state.selected];
             squares[this.state.selected] = 'e';
+
+            let checkStatusAfterMove = calculateCheck(squares);
+            if (this.state.whiteIsNext && checkStatusAfterMove.w || !this.state.whiteIsNext && checkStatusAfterMove.b){
+                alert("Invalid Move");
+                return;
+            }
+
             this.setState({
                 history: history.concat([
                     {
