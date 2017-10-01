@@ -1,14 +1,18 @@
+.game-board {
+    border: solid 1px black;
+}
+
 .square {
     background: #fff;
-    border: 1px solid #999;
     float: left;
     font-size: 24px;
     font-weight: bold;
     line-height: 34px;
-    height: 62px;
+    height: 60px;
     padding: 0;
     text-align: center;
-    width: 62px;
+    width: 60px;
+    border: none;
 }
 .square.white {
     background-color: white;
