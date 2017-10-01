@@ -56,7 +56,6 @@ class App extends React.Component {
         let currentTurn = this.state.whiteIsNext ? 'w' : 'b';
 
         if(this.state.winner.blackWin || this.state.winner.whiteWin){
-            debugger;
             return;
         }
 
@@ -131,7 +130,6 @@ class App extends React.Component {
         });
         let status = "Next player: " + (this.state.whiteIsNext ? "White" : "Black");
         if (this.state.check.w || this.state.check.b){
-            debugger;
             status += " is in check."
         }
 

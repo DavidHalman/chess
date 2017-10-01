@@ -1,20 +1,81 @@
 import React from 'react';
 import '../styles/Board.css';
+import whitePawn from '../images/whitePawn.png'
+import whiteBishop from '../images/whiteBishop.png'
+import whiteKnight from '../images/whiteKnight.png'
+import whiteRook from '../images/whiteRook.png'
+import whiteQueen from '../images/whiteQueen.png'
+import whiteKing from '../images/whiteKing.png'
+import blackPawn from '../images/blackPawn.png'
+import blackKnight from '../images/blackKnight.png'
+import blackBishop from '../images/blackBishop.png'
+import blackRook from '../images/blackRook.png'
+import blackQueen from '../images/blackQueen.png'
+import blackKing from '../images/blackKing.png'
 
 function Square(props) {
     let color = '';
-    if(props.value.charAt(0) === 'w') {
-        color = 'white'
-    } else if (props.value.charAt(0) === 'b') {
-        color = 'black'
+    if(props.squareNumber % 2 === 0 ) {
+        if (Math.floor(props.squareNumber / 8) % 2 === 0 ){
+            color = 'white';
+        } else {
+            color = 'black'
+        }
+    } else {
+        if (Math.floor(props.squareNumber / 8) % 2 === 0 ){
+            color = 'black';
+        } else {
+            color = 'white'
+        }
     }
     if (props.potentialMoves[props.squareNumber]){
         color += ' moveOption';
     }
     let currentTurn = props.currentPlayer === props.value.charAt(0) ? props.currentPlayer : '';
+    let imagePath;
+    switch(props.value){
+        case ('wP'):
+            imagePath = whitePawn;
+            break;
+        case ('wB'):
+            imagePath = whiteBishop;
+            break;
+        case ('wK'):
+            imagePath = whiteKnight;
+            break;
+        case ('wR'):
+            imagePath = whiteRook;
+            break;
+        case ('wQ'):
+            imagePath = whiteQueen;
+            break;
+        case ('wKi'):
+            imagePath = whiteKing;
+            break;
+        case ('bP'):
+            imagePath = blackPawn;
+            break;
+        case ('bB'):
+            imagePath = blackBishop;
+            break;
+        case ('bK'):
+            imagePath = blackKnight;
+            break;
+        case ('bR'):
+            imagePath = blackRook;
+            break;
+        case ('bQ'):
+            imagePath = blackQueen;
+            break;
+        case ('bKi'):
+            imagePath = blackKing;
+            break;
+        default:
+            imagePath = '';
+    }
     return (
         <button className={`square ${color} ${currentTurn}`} onClick={props.onClick}>
-            {props.value.substring(1)}
+            <img src = {imagePath} alt = {props.value.slice(1)} />
         </button>
     );
 }

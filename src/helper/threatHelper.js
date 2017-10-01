@@ -358,7 +358,6 @@ export function kingMovement(pos, board) {
 // Function will return true if player is in checkmate
 // checkedPlayer should be either 'w' or 'b'
 export function simulateForCheckmateOnCheck (board, checkedPlayer){
-    debugger;
     for(let pieceIndex = 0; pieceIndex < 64; pieceIndex++){
         if(board[pieceIndex].charAt(0) === checkedPlayer) {
             let simulatedMoves = calculateMovement(pieceIndex, board);
