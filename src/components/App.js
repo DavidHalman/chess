@@ -37,7 +37,11 @@ class App extends React.Component {
             stepNumber: 0,
             selected: null,
             whiteIsNext: true,
-            potentialMoves: Array(64).fill(false)
+            potentialMoves: Array(64).fill(false),
+            winner: {
+                blackWin: false,
+                whiteWin: false
+            }
         };
 
     }
@@ -50,6 +54,11 @@ class App extends React.Component {
         const current = history[history.length - 1];
         const squares = current.squares.slice();
         let currentTurn = this.state.whiteIsNext ? 'w' : 'b';
+
+        if(this.state.winner.blackWin || this.state.winner.whiteWin){
+            debugger;
+            return;
+        }
 
         if(this.state.selected === null && currentTurn === squares[i].charAt(0)){
             this.setState({
@@ -121,6 +130,19 @@ class App extends React.Component {
             );
         });
         let status = "Next player: " + (this.state.whiteIsNext ? "White" : "Black");
+        if (this.state.check.w || this.state.check.b){
+            debugger;
+            status += " is in check."
+        }
+
+
+        if (this.state.winner.whiteWin){
+            status = "White has won!";
+        }
+        else if (this.state.winner.blackWin){
+            status = "Black has won!";
+        }
+
         let currentPiece = this.state.selected;
 
         let showPlayerTurn = '';
