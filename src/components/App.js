@@ -82,7 +82,7 @@ class App extends React.Component {
             this.setState({
                 history: history.concat([
                     {
-                        squares: squares
+                        squares: pawnPromotion(squares)
                     }
                 ]),
                 selected: null,
@@ -177,6 +177,17 @@ class App extends React.Component {
 
 // ========================================
 
+function pawnPromotion(board){
+    for (let index = 0; index < 8; index++){
+        if (board[index] === 'wP'){
+            board[index] = 'wQ';
+        }
+        if (board[63 - index] === 'bP'){
+            board[63 - index] = 'bQ';
+        }
+    }
+    return board;
+}
 
 
 export default App;
