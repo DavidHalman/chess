@@ -1,4 +1,4 @@
-export function calculateMovement(pos, board){
+export function calculateMovement(pos, board, castleOptions){
     switch(board[pos]){
         case ('wP'):
         case ('bP'):
@@ -17,7 +17,7 @@ export function calculateMovement(pos, board){
             return queenMovement(pos, board);
         case ('wKi'):
         case ('bKi'):
-            return kingMovement(pos, board);
+            return kingMovement(pos, board, castleOptions);
         default:
             return Array(64).fill(false);
     }
@@ -340,7 +340,7 @@ function kingThreat(pos, board) {
     return threat;
 }
 
-export function kingMovement(pos, board) {
+export function kingMovement(pos, board, castleOptions) {
     let movement = new Array(64).fill(false);
     let allyColor = board[pos].charAt(0) === 'w' ? 'w' : 'b';
     let threat = calculateThreat(pos, board);
@@ -352,15 +352,19 @@ export function kingMovement(pos, board) {
     if(pos + 7 >= 0 && pos + 7 < 64 && board[pos + 7].charAt(0) !== allyColor && threat[pos + 7] === false && Math.floor(pos / 8) === Math.floor((pos + 7) / 8) - 1) {movement[pos + 7] = true;}
     if(pos + 8 >= 0 && pos + 8 < 64 && board[pos + 8].charAt(0) !== allyColor && threat[pos + 8] === false) {movement[pos + 8] = true;}
     if(pos + 9 >= 0 && pos + 9 < 64 && board[pos + 9].charAt(0) !== allyColor && threat[pos + 9] === false && Math.floor(pos / 8) === Math.floor((pos + 9) / 8) - 1) {movement[pos + 9] = true;}
+    if (allyColor === 'w' && castleOptions.white.left && board[57] === 'e' && board[58] === 'e' && board[59] === 'e'){movement[58] = true}
+    if (allyColor === 'w' && castleOptions.white.right && board[61] === 'e' && board[62] === 'e'){movement[62] = true}
+    if (allyColor === 'b' && castleOptions.black.left && board[1] === 'e' && board[2] === 'e' && board[3] === 'e'){movement[2] = true}
+    if (allyColor === 'b' && castleOptions.black.left && board[5] === 'e' && board[6] === 'e'){movement[6] = true}
     return movement;
 }
 
 // Function will return true if player is in checkmate
 // checkedPlayer should be either 'w' or 'b'
-export function simulateForCheckmateOnCheck (board, checkedPlayer){
+export function simulateForCheckmateOnCheck (board, checkedPlayer, castleOption){
     for(let pieceIndex = 0; pieceIndex < 64; pieceIndex++){
         if(board[pieceIndex].charAt(0) === checkedPlayer) {
-            let simulatedMoves = calculateMovement(pieceIndex, board);
+            let simulatedMoves = calculateMovement(pieceIndex, board, castleOption);
             for(let potentialMoveIndex = 0; potentialMoveIndex < 64; potentialMoveIndex++){
                 if(simulatedMoves[potentialMoveIndex]) {
                     let simulatedBoard = board.slice();

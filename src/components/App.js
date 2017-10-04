@@ -41,18 +41,28 @@ class App extends React.Component {
             winner: {
                 blackWin: false,
                 whiteWin: false
+            },
+            castlePossible: {
+                black: {
+                    left: true,
+                    right: true
+                },
+                white: {
+                    left: true,
+                    right: true
+                }
             }
         };
 
     }
     calculatePotentialMoves(i) {
-        return calculateMovement(i, this.state.history[this.state.stepNumber].squares)
+        return calculateMovement(i, this.state.history[this.state.stepNumber].squares, this.state.castlePossible);
     }
 
     handleClick(i) {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
-        const squares = current.squares.slice();
+        let squares = current.squares.slice();
         let currentTurn = this.state.whiteIsNext ? 'w' : 'b';
 
         if(this.state.winner.blackWin || this.state.winner.whiteWin){
@@ -72,13 +82,13 @@ class App extends React.Component {
         } else if (this.state.potentialMoves[i]) {
             squares[i] = squares[this.state.selected];
             squares[this.state.selected] = 'e';
+            squares = moveRookDuringCastle(squares, this.state.selected, this.state.castlePossible, i);
 
             let checkStatusAfterMove = calculateCheck(squares);
             if (this.state.whiteIsNext && checkStatusAfterMove.w || !this.state.whiteIsNext && checkStatusAfterMove.b){
                 alert("Invalid Move");
                 return;
             }
-
             this.setState({
                 history: history.concat([
                     {
@@ -88,17 +98,19 @@ class App extends React.Component {
                 selected: null,
                 stepNumber: history.length,
                 whiteIsNext: !this.state.whiteIsNext,
-                potentialMoves: Array(64).fill(false)
+                potentialMoves: Array(64).fill(false),
+                castlePossible: checkCastle(this.state.castlePossible, this.state.selected, checkStatusAfterMove)
 
             }, () => {
-                let check = calculateCheck(this.state.history[this.state.stepNumber].squares);
+                // let check = calculateCheck(this.state.history[this.state.stepNumber].squares);
+                let check = checkStatusAfterMove;
                 let whiteWin = false;
                 let blackWin = false;
                 if(check.w){
-                    blackWin = simulateForCheckmateOnCheck(this.state.history[this.state.stepNumber].squares, 'w');
+                    blackWin = simulateForCheckmateOnCheck(this.state.history[this.state.stepNumber].squares, 'w', this.state.castlePossible);
                 }
                 if(check.b){
-                    whiteWin = simulateForCheckmateOnCheck(this.state.history[this.state.stepNumber].squares, 'b');
+                    whiteWin = simulateForCheckmateOnCheck(this.state.history[this.state.stepNumber].squares, 'b', this.state.castlePossible);
                 }
                 this.setState({
                     check: check,
@@ -125,7 +137,6 @@ class App extends React.Component {
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
-        //const winner = calculateWinner(current.squares);
 
         const moves = history.map((step, move) => {
             const desc = move ? "Move #" + move : "Game start";
@@ -186,6 +197,59 @@ function pawnPromotion(board){
             board[63 - index] = 'bQ';
         }
     }
+    return board;
+}
+
+function checkCastle(castleOptions, pieceToMove, check){
+    switch(pieceToMove){
+        case(4):
+            castleOptions.black.left = false;
+            castleOptions.black.right = false;
+            break;
+        case(0):
+            castleOptions.black.left = false;
+            break;
+        case(7):
+            castleOptions.black.right = false;
+            break;
+        case(56):
+            castleOptions.white.left = false;
+            break;
+        case(60):
+            castleOptions.white.left = false;
+            castleOptions.white.right = false;
+            break;
+        case(63):
+            castleOptions.white.right = false;
+            break;
+        default:
+            break;
+    }
+    if(check.w){
+        castleOptions.white.left = false;
+        castleOptions.white.right = false;
+    }
+    if(check.b){
+        castleOptions.black.left = false;
+        castleOptions.black.right = false;
+    }
+    return castleOptions;
+}
+function moveRookDuringCastle(board, moveFrom, castleOptions, moveTo){
+    if(moveFrom === 4 && moveTo === 2 && castleOptions.black.left){
+        board[0] = 'e';
+        board[3] = 'bR';
+    } else if (moveFrom === 4 && moveTo === 6 && castleOptions.black.right){
+        board[7] = 'e';
+        board[5] = 'bR';
+    } else if (moveFrom === 60 && moveTo === 58 && castleOptions.white.left){
+        board[56] = 'e';
+        board[59] = 'wR';
+    } else if (moveFrom === 60 && moveTo === 62 && castleOptions.white.right){
+        board[63] = 'e';
+        board[61] = 'wR';
+    }
+
     return board;
 }
 
